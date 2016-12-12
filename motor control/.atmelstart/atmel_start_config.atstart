@@ -1,0 +1,288 @@
+format_version: '2'
+name: Motor control
+board:
+  identifier: CustomBoard
+  device: ATmega328P-MU
+details: null
+application: null
+middlewares: {}
+drivers:
+  CPU:
+    user_label: CPU
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::CPU::driver_config_definition::SYSCTRL::Drivers:SYSCTRL:'
+    functionality: System
+    api: 'Drivers:SYSCTRL:'
+    configuration:
+      async_input_speed: 32768
+      clkadc_oscillator: Input clock
+      clkasy_oscillator: Async input clock
+      clkcpu_oscillator: Input clock
+      clkio_oscillator: Input clock
+      clkptc_oscillator: Input clock
+      cpu_clock_source: CLKcpu
+      enable_async_input: true
+      enable_clkadc: true
+      enable_clkasy: true
+      enable_clkcpu: true
+      enable_clkio: true
+      enable_clkptc: true
+      enable_core_clock: true
+      enable_input: true
+      input_speed: 20000000
+      pm_ivsel: Interrupt vector placed at the beginning of main FLASH memory
+      pm_pud: false
+      pm_se: false
+      pm_sm: Idle
+      prescaler_divider: '1'
+    optional_signals: []
+    variant: null
+    clocks:
+      domain_group: null
+  EXTERNAL_IRQ_0:
+    user_label: EXTERNAL_IRQ_0
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::EXINT::driver_config_definition::EXINT::Drivers:EXINT.Init:'
+    functionality: External_IRQ
+    api: 'Drivers:EXINT_Init:'
+    configuration:
+      exint_isc0: Any logical change on ISC0 generates an interrupt request
+      exint_isc1: Any logical change on ISC1 generates an interrupt request
+    optional_signals:
+    - identifier: EXTERNAL_IRQ_0:PCINT/8
+      pad: PC0
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::EXINT.PCINT.8
+      name: EXINT/PCINT/8
+      label: PCINT/8
+    - identifier: EXTERNAL_IRQ_0:PCINT/9
+      pad: PC1
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::EXINT.PCINT.9
+      name: EXINT/PCINT/9
+      label: PCINT/9
+    - identifier: EXTERNAL_IRQ_0:PCINT/10
+      pad: PC2
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::EXINT.PCINT.10
+      name: EXINT/PCINT/10
+      label: PCINT/10
+    - identifier: EXTERNAL_IRQ_0:PCINT/11
+      pad: PC3
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::EXINT.PCINT.11
+      name: EXINT/PCINT/11
+      label: PCINT/11
+    variant: null
+    clocks:
+      domain_group: null
+  I2C_0:
+    user_label: I2C_0
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::TWI::driver_config_definition::TWI.Slave::Drivers:TWI.Init:'
+    functionality: I2C
+    api: 'Drivers:TWI_Init:'
+    configuration:
+      twi_twamr_twam: 0
+      twi_twar_twa: 66
+      twi_twar_twgce: false
+      twi_twcr_twea: true
+      twi_twcr_twen: true
+      twi_twcr_twie: true
+    optional_signals:
+    - identifier: I2C_0:SCL
+      pad: PC5
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TWI.SCL
+      name: TWI/SCL
+      label: SCL
+    - identifier: I2C_0:SDA
+      pad: PC4
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TWI.SDA
+      name: TWI/SDA
+      label: SDA
+    variant: null
+    clocks:
+      domain_group: null
+  TIMER_0:
+    user_label: TIMER_0
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::TC0::driver_config_definition::Mode.3.Fast.PWM::Drivers:TC8.Init:'
+    functionality: Timer
+    api: 'Drivers:TC8_Init:'
+    configuration:
+      tc8_coma: Clear OCA on Compare Match, set OCA on BOTTOM (non-inverting mode)
+      tc8_comb: Clear OCB on Compare Match, set OCB on BOTTOM (non-inverting mode)
+      tc8_cs: IO clock divided by 8
+      tc8_ociea: false
+      tc8_ocieb: false
+      tc8_toie: false
+    optional_signals:
+    - identifier: TIMER_0:TC0/OCA
+      pad: PD6
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TC0.OCA
+      name: TC0/OCA
+      label: OCA
+    - identifier: TIMER_0:TC0/OCB
+      pad: PD5
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TC0.OCB
+      name: TC0/OCB
+      label: OCB
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC8
+          input: CLKio
+        configuration:
+          tc8_clock_source: CLKio
+  TIMER_2:
+    user_label: TIMER_2
+    definition: 'Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::TC2::driver_config_definition::Mode.3.Fast.PWM::Drivers:TC8.Init:'
+    functionality: Timer
+    api: 'Drivers:TC8_Init:'
+    configuration:
+      tc8_async_exclk: false
+      tc8_coma: Clear OCA on Compare Match, set OCA on BOTTOM (non-inverting mode)
+      tc8_comb: Clear OCB on Compare Match, set OCB on BOTTOM (non-inverting mode)
+      tc8_cs: IO clock divided by 8
+      tc8_ociea: false
+      tc8_ocieb: false
+      tc8_toie: false
+    optional_signals:
+    - identifier: TIMER_2:TC2/OCA
+      pad: PB3
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TC2.OCA
+      name: TC2/OCA
+      label: OCA
+    - identifier: TIMER_2:TC2/OCB
+      pad: PD3
+      mode: Enabled
+      configuration: null
+      definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::optional_signal_definition::TC2.OCB
+      name: TC2/OCB
+      label: OCB
+    variant: null
+    clocks:
+      domain_group:
+        nodes:
+        - name: TC2
+          input: CLKio
+        configuration:
+          tc2_clock_source: CLKio
+  USART_0:
+    user_label: USART_0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::USART0::driver_config_definition::UART::Drivers:USART:USART.Init
+    functionality: USART
+    api: Drivers:USART:USART_Init
+    configuration:
+      usart_baud_rate: 115200
+      usart_mpcm: false
+      usart_rxcie: false
+      usart_rxen: false
+      usart_txcie: false
+      usart_txen: true
+      usart_ucpol: false
+      usart_ucsz: 8-bit
+      usart_udrie: false
+      usart_upm: Disabled
+      usart_usbs: 1-bit
+    optional_signals: []
+    variant:
+      specification: UMSEL=0
+      required_signals:
+      - name: USART0/RXD
+        pad: PD0
+        label: RXD
+      - name: USART0/TXD
+        pad: PD1
+        label: TXD
+    clocks:
+      domain_group:
+        nodes:
+        - name: USART
+          input: CLKio
+        configuration:
+          usart_clock_source: CLKio
+pads:
+  PD3:
+    name: PD3
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PD3
+    mode: Digital output
+    user_label: PD3
+    configuration: {}
+  PD5:
+    name: PD5
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PD5
+    mode: Digital output
+    user_label: PD5
+    configuration: {}
+  PD6:
+    name: PD6
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PD6
+    mode: Digital output
+    user_label: PD6
+    configuration: {}
+  PB3:
+    name: PB3
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PB3
+    mode: Digital output
+    user_label: PB3
+    configuration: {}
+  PC0:
+    name: PC0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC0
+    mode: Digital input
+    user_label: PC0
+    configuration: {}
+  PC1:
+    name: PC1
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC1
+    mode: Digital input
+    user_label: PC1
+    configuration: {}
+  PC2:
+    name: PC2
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC2
+    mode: Digital input
+    user_label: PC2
+    configuration: {}
+  PC3:
+    name: PC3
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC3
+    mode: Digital input
+    user_label: PC3
+    configuration: {}
+  PC4:
+    name: PC4
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC4
+    mode: Advanced
+    user_label: PC4
+    configuration: {}
+  PC5:
+    name: PC5
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PC5
+    mode: Advanced
+    user_label: PC5
+    configuration: {}
+  PD0:
+    name: PD0
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PD0
+    mode: Digital input
+    user_label: PD0
+    configuration: {}
+  PD1:
+    name: PD1
+    definition: Atmel:ATMega48_88_168_328_drivers:1.0.0::ATmega328P-MU::pad::PD1
+    mode: Digital output
+    user_label: PD1
+    configuration: {}
