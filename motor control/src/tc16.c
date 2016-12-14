@@ -1,7 +1,7 @@
 /**
  * \file
  *
- * \brief USART related functionality implementation.
+ * \brief TC16 related functionality implementation.
 *
  * Copyright (C) 2016 Atmel Corporation. All rights reserved.
  *
@@ -41,96 +41,30 @@
  *
  */
 
-#include <usart.h>
+#include <tc16.h>
 #include <utils.h>
-#include <atmel_start_pins.h>
 
 /**
- * \brief Initialize USART_0 interface
+ * \brief Initialize TIMER_0 interface
  */
-int8_t USART_0_init()
+int8_t TIMER_3_init()
 {
+    /* Enable TC1 */
+    	PRR &= ~(1 << PRTIM1);
 
-	/* Enable USART0 */
-	PRR &= ~(1 << PRUSART0);
+    TCCR1A = (0 << COM1A1) | (0 << COM1A0) | // Normal port operation, OCA disconnected
+    		(0 << COM1B1) | (0 << COM1B0) | // Normal port operation, OCB disconnected
+    		(0 << WGM11) | (0 << WGM10); // Mode 0 Normal
 
-#define BAUD 115200
+    TCCR1B = (0 << WGM13) | (0 << WGM12) | // Mode 0 Normal
+    		(0 << ICNC1) | // Disable input capture noise canceler
+    		(1 << ICES1) | // Rising edge will trigger input capture
+    		(1 << CS12) | (0 << CS11) | (1 << CS10); // IO clock divided by 1024
 
-	#include<utils/setbaud.h>
-
-	UBRR0H = UBRRH_VALUE;
-	UBRR0L = UBRRL_VALUE;
-
-	UCSR0A = (USE_2X << U2X0) |
-	          (0 << MPCM0); // Disable multi-processor communication mode
-
-UCSR0B = (0 << RXCIE0) | // Disable RX complete interrupt
-	          (0 << TXCIE0) | // Disable TX complete interrupt
-	          (0 << UDRIE0) | // Disable data register empty interrupt
-	          (0 << RXEN0) | // Enable receiver
-	          (1 << TXEN0) | // Disable transmitter
-		            (0 << UCSZ02); // Character size is 8-bit
-
-UCSR0C = (0 << UMSEL01) | (0 << UMSEL00) | // Module mode: UART
-          (0 << UPM01) | (0 << UPM00) | // Parity mode: Disabled
-	          (0 << USBS0)  | // 1-bit stop bit
-	          (1 << UCSZ01) | (1 << UCSZ00); // Character size is 8-bit
-
-return 0;
-
-}
-
-/**
- * \brief Check if USART_0 transmitt buffer is empty
- */
-int8_t USART_0_tx_empty()
-{
-	return UCSR0A & (1 << UDRE0);
-}
-
-/**
- * \brief Check if USART_0 receive buffer is full
- */
-int8_t USART_0_rx_full()
-{
-	return UCSR0A & (1 << RXC0);
-}
-
-/**
- * \brief Check if USART_0 data is transmitted
- */
-int8_t USART_0_data_transmitted()
-{
-	return UCSR0A & (1 << TXC0);
-}
-
-/**
- * \brief Read one character from USART_0
- */
-uint8_t USART_0_getc()
-{
-	return UDR0;
-}
-
-/**
- * \brief Write one character on USART_0
- */
-int8_t USART_0_putc(const uint8_t data)
-{
-	UDR0 = data;
+    TIMSK1 = (0 << ICIE1) | // Disable input capture interrupt
+    		(0 << OCIE1B) | // Disable output compare match B interrupt
+    		(0 << OCIE1A) | // Disable output compare match A interrupt
+    		(1 << TOIE1);   // Enable overflow interrupt
 
 	return 0;
-}
-
-uint8_t USART0_put_string(uint8_t *str)
-{
-	int i = 0;
-	while(str[i] != '\0'){
-		USART_0_putc(str[i]);
-		while( ! (UCSR0A & (1 << UDRE0)));
-		i++;
-	}
-	return i;
-	
-	
 }

@@ -47,6 +47,7 @@ C_SRCS +=  \
 ../main.c \
 ../src/driver_init.c \
 ../src/exint.c \
+../src/tc16.c \
 ../src/tc8.c \
 ../src/twi.c \
 ../src/usart.c
@@ -68,6 +69,7 @@ src/ccp.o \
 src/driver_init.o \
 src/exint.o \
 src/protected_io.o \
+src/tc16.o \
 src/tc8.o \
 src/twi.o \
 src/usart.o
@@ -80,6 +82,7 @@ src/ccp.o \
 src/driver_init.o \
 src/exint.o \
 src/protected_io.o \
+src/tc16.o \
 src/tc8.o \
 src/twi.o \
 src/usart.o
@@ -92,6 +95,7 @@ src/ccp.d \
 src/driver_init.d \
 src/exint.d \
 src/protected_io.d \
+src/tc16.d \
 src/tc8.d \
 src/twi.d \
 src/usart.d
@@ -104,6 +108,7 @@ src/ccp.d \
 src/driver_init.d \
 src/exint.d \
 src/protected_io.d \
+src/tc16.d \
 src/tc8.d \
 src/twi.d \
 src/usart.d
@@ -151,6 +156,13 @@ src/driver_init.o: ../src/driver_init.c
 	
 
 src/exint.o: ../src/exint.c
+	@echo Building file: $<
+	@echo Invoking: AVR/GNU C Compiler : 4.9.2
+	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.1.130\include" -I"../Config" -I"../include" -I"../utils" -I"../utils/assembler" -I".."  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.1.130\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 
+	@echo Finished building: $<
+	
+
+src/tc16.o: ../src/tc16.c
 	@echo Building file: $<
 	@echo Invoking: AVR/GNU C Compiler : 4.9.2
 	$(QUOTE)C:\Program Files (x86)\Atmel\Studio\7.0\toolchain\avr8\avr8-gnu-toolchain\bin\avr-gcc.exe$(QUOTE)  -x c -funsigned-char -funsigned-bitfields -DDEBUG  -I"C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.1.130\include" -I"../Config" -I"../include" -I"../utils" -I"../utils/assembler" -I".."  -O1 -ffunction-sections -fdata-sections -fpack-struct -fshort-enums -g2 -Wall -mmcu=atmega328p -B "C:\Program Files (x86)\Atmel\Studio\7.0\Packs\atmel\ATmega_DFP\1.1.130\gcc\dev\atmega328p" -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<" 

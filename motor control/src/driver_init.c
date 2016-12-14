@@ -85,15 +85,15 @@ void tc8_2_init(void)
 {
 
 // Set pin direction to output
-PB3_set_dir(PORT_DIR_OUT);
+//PB3_set_dir(PORT_DIR_OUT);
 
-PB3_set_level(
+/*PB3_set_level(
         // <y> Initial level
         // <id> pad_initial_level
         // <false"> Low
         // <true"> High
         false);
-
+*/
 // Set pin direction to output
 PD3_set_dir(PORT_DIR_OUT);
 
@@ -105,6 +105,12 @@ PD3_set_level(
         false);
 
 	TIMER_2_init();
+}
+
+void tc16_init(void)
+{
+
+	TIMER_3_init();
 }
 
 void system_init()
@@ -120,8 +126,8 @@ exint_0_init();
 tc8_0_init();
 
 tc8_2_init();
-
-//USART_0_init();
+tc16_init();
+USART_0_init();
 
 }
 

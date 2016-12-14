@@ -114,6 +114,9 @@ uint8_t USART_0_getc();
  */
 int8_t USART_0_putc(const uint8_t data);	
 
+
+uint8_t USART0_put_string(uint8_t *str);
+
 #ifdef __cplusplus
 }
 #endif
