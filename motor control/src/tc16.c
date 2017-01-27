@@ -50,7 +50,7 @@
 int8_t TIMER_3_init()
 {
     /* Enable TC1 */
-    	PRR &= ~(1 << PRTIM1);
+    PRR &= ~(1 << PRTIM1);
 
     TCCR1A = (0 << COM1A1) | (0 << COM1A0) | // Normal port operation, OCA disconnected
     		(0 << COM1B1) | (0 << COM1B0) | // Normal port operation, OCB disconnected

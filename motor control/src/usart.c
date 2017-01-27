@@ -122,13 +122,16 @@ int8_t USART_0_putc(const uint8_t data)
 	return 0;
 }
 
-uint8_t USART0_put_string(uint8_t *str)
+uint8_t USART0_put_string(uint8_t *p_str)
 {
 	int i = 0;
-	while(str[i] != '\0'){
-		USART_0_putc(str[i]);
+
+	while(p_str[i] != '\0'){
+		USART_0_putc(p_str[i]);
 		while( ! (UCSR0A & (1 << UDRE0)));
 		i++;
+		if(i>=255)
+			break;
 	}
 	return i;
 	

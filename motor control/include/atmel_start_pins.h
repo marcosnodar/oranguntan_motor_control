@@ -41,6 +41,18 @@ static inline void PB3_set_dir(
 	PORTB_set_pin_dir(PORTB3, dir);
 }
 
+static inline void PB0_set_dir(
+	const enum port_dir dir)
+{
+	PORTB_set_pin_dir(PORTB0, dir);
+}
+
+static inline void PB1_set_dir(
+	const enum port_dir dir)
+{
+	PORTB_set_pin_dir(PORTB1, dir);
+}
+
 /**
  * \brief Set PB3 level
  *
@@ -54,7 +66,16 @@ static inline void PB3_set_level(
 {
 	PORTB_set_pin_level(PORTB3, level);
 }
-
+static inline void PB0_set_level(
+const bool level)
+{
+	PORTB_set_pin_level(PORTB0, level);
+}
+static inline void PB1_set_level(
+const bool level)
+{
+	PORTB_set_pin_level(PORTB1, level);
+}
 /**
  * \brief Toggle output level on PB3
  *
@@ -673,7 +694,26 @@ static inline void PD5_set_pull_mode(
 {
 	PORTD_set_pin_pull_mode(PORTD5, pull_mode);
 }
-
+static inline void PD4_set_dir(
+const enum port_dir dir)
+{
+	PORTD_set_pin_dir(PORTD4, dir);
+}
+static inline void PD7_set_dir(
+const enum port_dir dir)
+{
+	PORTD_set_pin_dir(PORTD7, dir);
+}
+static inline void PD4_set_level(
+const bool level)
+{
+	PORTD_set_pin_level(PORTD4, level);
+}
+static inline void PD7_set_level(
+const bool level)
+{
+	PORTD_set_pin_level(PORTD7, level);
+}
 /**
  * \brief Set PD5 data direction
  *
