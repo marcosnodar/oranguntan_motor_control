@@ -10,7 +10,7 @@ int16_t P;
 int16_t I;
 int16_t d;
 int32_t K;
-extern 	uint32_t timer_value;
+extern 	uint32_t timer_value[4];
 extern uint32_t timer_diff[4];
 extern uint32_t target_timer_diff[4];
 extern volatile uint8_t update_pwm[4];
@@ -166,6 +166,12 @@ int main(void)
 		PC3_set_dir(PORT_DIR_IN);
 		PC3_set_pull_mode(PORT_PULL_UP);
 		
+		PCMSK1 &= ~0xF;
+		PCMSK1 |= 1 << PCINT8;
+		PCMSK1 |= 1 << PCINT9;
+		PCMSK1 |= 1 << PCINT10;
+		PCMSK1 |= 1 << PCINT11;
+		
 		PB3_set_dir(PORT_DIR_OUT);
 		PB3_set_level(false);
 		PD3_set_dir(PORT_DIR_OUT);
@@ -178,7 +184,7 @@ int main(void)
 		set_direction(RIGHT, FORWARD);
 		set_direction(LEFT, FORWARD);
 		
-		init_pid(65535, 10*1024 ,512,100);
+		init_pid(65535, 100 ,50,20);
 	
 		/* Replace with your application code */
 		
@@ -187,7 +193,7 @@ int main(void)
 		//1 timer tick = 51.2us
 		
 
-		timer_value = 0;
+		_delay_ms(3000);
 	
 		for(i=0; i<4; i++){
 
@@ -197,12 +203,14 @@ int main(void)
 			error_sum[i] = 0;
 			error_old[i] = 0;
 			update_pwm[i] = 1;
+			timer_value[i] = get_timer();
 			//set_pmw_output(100, i);
 			
 		}
-		int_stat = PINC & 0xF;
+
 		DEBUG_PRINT("target_timer_diff0 %lu, K = %ld, P = %d, I = %d, D = %d,  \t \n\r", target_timer_diff[0], K, P, I, d);
-		_delay_ms(3000);
+
+		int_stat = PINC & 0xF;
 		cpu_irq_enable();
 		j=0;
 	
@@ -211,15 +219,15 @@ int main(void)
 			//TIMER_0_set_comp_b(100);
 			//TIMER_2_set_comp_b(100);
 			
-			
+		
 		while(1) {
 			//_delay_ms(1);
 			j++;
 			for(i=0; i<4; i++){	
-	
+
 				if(update_pwm[i] != 0){
 					update_pwm[i]=0;
-					pwm = compute_new_pwm(timer_value, i);
+					pwm = compute_new_pwm(timer_value[i], i);
 					set_pmw_output(pwm, i);
 
 					if(j%100==0){

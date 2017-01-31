@@ -54,7 +54,7 @@ uint8_t compute_new_pwm(uint32_t timer_new, uint8_t index)
 {
 	
 	int32_t coef_P = 0, coef_I = 0, coef_D = 0;
-	int32_t error[index];
+	int32_t error;
 					int32_t output = 0;
 					
 					cpu_irq_disable();
@@ -65,25 +65,25 @@ uint8_t compute_new_pwm(uint32_t timer_new, uint8_t index)
 					cpu_irq_enable();
 
 
-					error[index] =  timer_diff[index] - target_timer_diff[index];
+					error =  timer_diff[index] - target_timer_diff[index];
 					
 					if(P)
 					{
-						coef_P = P * error[index] / K;
+						coef_P = P * error / K;
 						if(coef_P > MAX_ERR){
 							coef_P = MAX_ERR;
-							DEBUG_PRINT("MAX P %ld", coef_P);
+							DEBUG_PRINT("MAX P %ld\r\n", coef_P);
 						}
 						else if(coef_P < MIN_ERR){
 							coef_P = MIN_ERR;
-							DEBUG_PRINT("MIN P %ld", coef_P);
+							DEBUG_PRINT("MIN P %ld\r\n", coef_P);
 						}
 					}
 
 					if (I)
 					{
-						error_sum[index] = error_sum[index] +  error[index] ;
-						DEBUG_PRINT("error = %ld\n\r", error[index]);
+						error_sum[index] = error_sum[index] +  error ;
+						//DEBUG_PRINT("error = %ld\n\r", error);
 					/*	if(error_sum > INT16_MAX)
 							error_sum = INT16_MAX;
 						else if(error_sum < INT16_MIN)
@@ -120,7 +120,7 @@ uint8_t compute_new_pwm(uint32_t timer_new, uint8_t index)
 						output = MIN_OUT;
 					
 					}
-					DEBUG_PRINT(" P %ld I %ld , D %ld Out %u\n\r", coef_P, coef_I, coef_D, (uint8_t) output);
+					DEBUG_PRINT(" Motor %d P %ld I %ld , D %ld Out %u\n\r", index, coef_P, coef_I, coef_D, (uint8_t) output);
 					old_timer_diff[index] = timer_diff[index];
 					timer_old[index] = timer_new;		
 
@@ -141,10 +141,11 @@ uint8_t int_stat;
 					sensor_stat = PINC & 0xF; 
 					pin_change = sensor_stat ^ int_stat;
 					for(index=0; index<4; index++){
-						if(pin_change & (1<<index)){
+						if((pin_change & (1<<index))==(1<<index)){
 							//DEBUG_PRINT("stat %x Index %d\n\r", sensor_stat, index);
 							timer_value[index] = get_timer();
 							update_pwm[index] = 1;
+							//int_stat ^= 1<<index;
 						}
 					}
 					int_stat = sensor_stat; 
