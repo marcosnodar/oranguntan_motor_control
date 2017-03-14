@@ -38,7 +38,10 @@ extern uint8_t int_stat;
 
 void set_pmw_output(uint8_t pwm, uint8_t index)
 {
-
+if(pwm==0)
+ {
+	DEBUG_PRINT("PWM of motor %d is off\n", index);
+ }
 	switch(index){
 		case 0:
 			TIMER_2_set_comp_b(pwm);
@@ -107,10 +110,15 @@ void set_direction(uint8_t side, uint8_t dir)
 }
 
 
+extern uint32_t i2c_data_ready;
+extern uint8_t i2c_reg;
+extern uint8_t i2c_data;
+
+float target_angular_speed1_rad_per_s = 0 * 2*3.14;
 int main(void)
 {
 	motor1_steps = 0;
-	
+	i2c_data_ready = 0;
 		atmel_start_init();
 	
 		/* 
@@ -133,7 +141,7 @@ int main(void)
 		*/
 		
 		uint16_t j;
-		float target_angular_speed1_rad_per_s = 1 * 2*3.14;
+
 		/* Initializes MCU, drivers and middleware */
 
 		uint8_t pwm;
@@ -141,7 +149,7 @@ int main(void)
 
 	/* set L/R direction controls */
 	
-	_delay_ms(3000);
+	//_delay_ms(3000);
 	
 	
 		PB0_set_dir(PORT_DIR_OUT);
@@ -166,6 +174,17 @@ int main(void)
 		PC3_set_dir(PORT_DIR_IN);
 		PC3_set_pull_mode(PORT_PULL_UP);
 		
+	/* initialize pull ups on I2C */
+		PC4_set_pull_mode(PORT_PULL_UP);
+		PC5_set_pull_mode(PORT_PULL_UP);
+		PC4_set_dir(PORT_DIR_IN);
+		PC5_set_dir(PORT_DIR_IN);
+		
+	/* initialize pull ups on UART */
+		PD0_set_pull_mode(PORT_PULL_UP);
+		PD1_set_pull_mode(PORT_PULL_UP);
+		
+		
 		PCMSK1 &= ~0xF;
 		PCMSK1 |= 1 << PCINT8;
 		PCMSK1 |= 1 << PCINT9;
@@ -180,6 +199,7 @@ int main(void)
 		PD5_set_level(false);
 		PD6_set_dir(PORT_DIR_OUT);
 		PD6_set_level(false);
+		
 
 		set_direction(RIGHT, FORWARD);
 		set_direction(LEFT, FORWARD);
@@ -191,14 +211,14 @@ int main(void)
 	
 		// 8 steps =  1 rotation
 		//1 timer tick = 51.2us
-		
 
-		_delay_ms(3000);
+	//	_delay_ms(3000);
 	
 		for(i=0; i<4; i++){
 
 			timer_old[i] = 0;
-			target_timer_diff[i] =  (uint32_t) (15330./target_angular_speed1_rad_per_s);
+			//target_timer_diff[i] =  (uint32_t) (15330./target_angular_speed1_rad_per_s);
+			target_timer_diff[i] = 0;
 			old_timer_diff[i] = 0;
 			error_sum[i] = 0;
 			error_old[i] = 0;
@@ -206,8 +226,15 @@ int main(void)
 			timer_value[i] = get_timer();
 			//set_pmw_output(100, i);
 			
-		}
-
+		}		
+		
+	for (i=0; i< 32; i++)
+	{
+		register_map[i] = 0;
+	}
+	
+	register_map[ID] = 0x01;
+	
 		DEBUG_PRINT("target_timer_diff0 %lu, K = %ld, P = %d, I = %d, D = %d,  \t \n\r", target_timer_diff[0], K, P, I, d);
 
 		int_stat = PINC & 0xF;
@@ -219,10 +246,29 @@ int main(void)
 			//TIMER_0_set_comp_b(100);
 			//TIMER_2_set_comp_b(100);
 			
+		DEBUG_PRINT("Main loop\r\n", NULL);
+		DEBUG_PRINT("TEST 0X%X\n\r", TWSR);
+		DEBUG_PRINT("TEST 0X%X\n\r", TWCR);
 		
+//TWCR &= ~(1<<TWSTO | 1<<TWSTA  | 1 << TWEN);
+
 		while(1) {
 			//_delay_ms(1);
 			j++;
+		//	if(j%1000==0)
+		//			DEBUG_PRINT("TEST 0X%X\n\r", TWCR);
+			if(i2c_data_ready != 0)
+			{
+				for(i=0; i<4; i++)
+				{
+					if(register_map[i+1] == 0)
+						target_timer_diff[i] = 0;
+					else
+						target_timer_diff[i] = (uint32_t) (2*3.14*15330./register_map[i+1]);
+					i2c_data_ready &= ~(1<<(i+1));	
+					DEBUG_PRINT("Updated register %d with %ld\n", i, target_timer_diff[i])
+				}
+			}
 			for(i=0; i<4; i++){	
 
 				if(update_pwm[i] != 0){
@@ -230,16 +276,10 @@ int main(void)
 					pwm = compute_new_pwm(timer_value[i], i);
 					set_pmw_output(pwm, i);
 
-					if(j%100==0){
-						DEBUG_PRINT("pwm = %u\t it = %lu\n\r", pwm, it);
-					}
 				}
 
-			}
-		
-	
-			
 		}
+	}
 	
 }
 

@@ -57,6 +57,11 @@ uint8_t compute_new_pwm(uint32_t timer_new, uint8_t index)
 	int32_t error;
 					int32_t output = 0;
 					
+					
+					if(target_timer_diff[index] == 0){
+						DEBUG_PRINT("Compute PWM of motor %d = 0\n", index);
+						return 0;
+					}
 					cpu_irq_disable();
 					timer_diff[index] = timer_new + wrap[index] * 65536 - timer_old[index];
 					if(wrap[index]){
@@ -130,7 +135,7 @@ uint8_t compute_new_pwm(uint32_t timer_new, uint8_t index)
 
 
 uint8_t int_stat;
-
+extern float target_angular_speed1_rad_per_s;
 
 				ISR(PCINT1_vect)
 				{
@@ -164,4 +169,71 @@ uint8_t int_stat;
 						wrap[index]++;
 					}
 					cpu_irq_enable();					
+				}
+				
+uint32_t i2c_data_ready;
+uint8_t reg_addr;
+uint8_t is_addr=0;
+				ISR(TWI_vect)
+				{
+					uint8_t twdr, twsr,twcr;
+
+				
+					cpu_irq_disable();
+					
+					twcr = TWCR;
+					twdr = TWDR;
+					twsr = (TWSR & 0xFC);
+
+
+					switch(twsr){
+						case DETECT_START_WRITE: 
+							TWCR |= 1<< TWINT;
+							TWCR |= 1<< TWEA;
+							is_addr = 1;
+							break;
+							
+						case WRITE_BYTE:
+							if(is_addr){
+								reg_addr = TWDR;
+								if(reg_addr >= sizeof(register_map))
+									reg_addr = sizeof(register_map) -1;
+								DEBUG_PRINT("Set address %x\n\r", reg_addr);
+								is_addr = 0;
+							}
+							else
+							{
+								*(uint8_t*)(register_map + reg_addr) = TWDR;
+								DEBUG_PRINT("write register  %x with %x\n\r", reg_addr,*(uint8_t*)(register_map + reg_addr) );
+								if(reg_addr++ >= sizeof(register_map))
+									reg_addr = sizeof(register_map) -1;
+								i2c_data_ready |= 1 << reg_addr;
+							}
+							TWCR |= 1<<TWINT;
+							TWCR |= 1<< TWEA;
+							break;
+							
+						case DETECT_STOP:
+							TWCR |= 1<< TWINT;
+							break;
+							
+						case DETECT_START_READ:
+						case DETECT_CONTINUE_READ:		
+							TWDR = *(uint8_t*)(register_map + reg_addr);
+							//DEBUG_PRINT("Read register %x = %x\n\r", reg_addr,*(uint8_t*)(register_map + reg_addr) )
+							TWCR |= 1 << TWINT;
+							TWCR |= 1<< TWEA;
+							if(reg_addr++ >= sizeof(register_map))
+								reg_addr = sizeof(register_map) -1;	
+							break;
+							
+						case DETECT_STOP_READ:
+							TWCR |= 1 << TWINT;
+							TWCR |= 1 << TWEA;
+							break;
+					}
+					
+				//	DEBUG_PRINT("I2C INTERRUPT, stat 0x%X TWCR=%x, data 0x%x\n\r", twsr, twcr, twdr)
+					cpu_irq_enable();
+
 				}

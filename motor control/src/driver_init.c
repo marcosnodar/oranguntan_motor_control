@@ -121,7 +121,7 @@ sysctrl_init();
 
 exint_0_init();
 
-//I2C_0_init();
+I2C_0_init();
 
 tc8_0_init();
 
