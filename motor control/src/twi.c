@@ -59,7 +59,8 @@ int8_t I2C_0_init()
 				| (0 << TWGCE) /* TWI General Call Recognition: disabled */; 
 
 	TWAMR = (0x00 << TWAM0) /* TWI (Slave) Address Mask: 0 */;
-	
+			
+	TWCR &= ~(1<<TWSTO | 1<<TWSTA  | 1 << TWEN); /* TWI slave mode */
 	
 
 	return 0;

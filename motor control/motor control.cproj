@@ -282,6 +282,9 @@
     <Compile Include="src\exint.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\motor_control.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\protected_io.S">
       <SubType>compile</SubType>
     </Compile>

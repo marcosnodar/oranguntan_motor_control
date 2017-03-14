@@ -117,17 +117,17 @@ void system_init()
 {
 	mcu_init();
 
-sysctrl_init();
+	sysctrl_init();
 
-exint_0_init();
+	exint_0_init();
 
-I2C_0_init();
+	I2C_0_init();
 
-tc8_0_init();
+	tc8_0_init();
 
-tc8_2_init();
-tc16_init();
-USART_0_init();
+	tc8_2_init();
+	tc16_init();
+	USART_0_init();
 
 }
 
